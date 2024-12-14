@@ -6,6 +6,7 @@ type Config struct {
 	Environment    string `mapstructure:"ENV"`
 	Swagger        string `mapstructure:"SWAGGER"`
 	DBDriver       string `mapstructure:"DB_DRIVER"`
+	KafkaServers   string `mapstructure:"KAFKA_SERVER"`
 	DBHost         string `mapstructure:"DB_HOST"`
 	DBPort         int    `mapstructure:"DB_PORT"`
 	DBName         string `mapstructure:"DB_NAME"`
