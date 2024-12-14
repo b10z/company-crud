@@ -9,7 +9,7 @@ import (
 func main() {
 	cfg, err := LoadConfig("../")
 	if err != nil {
-		slog.Error("init failed:", err)
+		slog.Error("init failed:", err.Error())
 		os.Exit(0)
 	}
 
