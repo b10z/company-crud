@@ -8,6 +8,14 @@ import (
 	"github.com/google/uuid"
 )
 
+const errorSection = "companyService"
+const (
+	create  = "create"
+	deleteM = "delete"
+	get     = "get"
+	patch   = "patch"
+)
+
 type Company struct {
 	producer  *producer.KafkaProducer
 	companyDB domain.CompanyDB
@@ -28,6 +36,55 @@ func (c *Company) Create(company domain.Company) (uuid.UUID, error) {
 		return uuid.UUID{}, err
 	}
 
-	err = c.producer.ProduceEvent([]byte(fmt.Sprintf("New id")))
+	err = c.producer.ProduceEvent([]byte(fmt.Sprintf("New company created, with ID: %s", id.String())))
+	if err != nil {
+		return uuid.UUID{}, err
+	}
 
+	c.logger.Named(fmt.Sprintf("%s:%s", errorSection, create)).Info("Company entry and event created")
+
+	return id, nil
+}
+
+func (c *Company) Delete(companyName string) error {
+	err := c.companyDB.DeleteByName(companyName)
+	if err != nil {
+		return err
+	}
+
+	err = c.producer.ProduceEvent([]byte(fmt.Sprintf("New company created, with name: %s", companyName)))
+	if err != nil {
+		return err
+	}
+
+	c.logger.Named(fmt.Sprintf("%s:%s", errorSection, deleteM)).Info("Company entry deleted")
+
+	return nil
+}
+
+func (c *Company) Get(companyName string) (domain.Company, error) {
+	company, err := c.companyDB.GetByName(companyName)
+	if err != nil {
+		return domain.Company{}, err
+	}
+
+	c.logger.Named(fmt.Sprintf("%s:%s", errorSection, get)).Info("Company info retrieved")
+
+	return company, nil
+}
+
+func (c *Company) Patch(company domain.Company) (domain.Company, error) {
+	err := c.companyDB.PatchByName(company)
+	if err != nil {
+		return domain.Company{}, err
+	}
+
+	err = c.producer.ProduceEvent([]byte(fmt.Sprintf("Company entry patched, with ID: %s", company.ID.String())))
+	if err != nil {
+		return domain.Company{}, err
+	}
+
+	c.logger.Named(fmt.Sprintf("%s:%s", errorSection, patch)).Info("Company info retrieved")
+
+	return company, nil
 }

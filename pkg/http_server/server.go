@@ -1,7 +1,6 @@
 package http_server
 
 import (
-	"company-crud/pkg/logger"
 	"context"
 	"errors"
 	"fmt"
@@ -14,7 +13,6 @@ import (
 
 type Server struct {
 	router *mux.Router
-	logger *logger.Logger
 	server *http.Server
 }
 
@@ -22,7 +20,7 @@ type GroupRouter interface {
 	AddRoute(r *mux.Router)
 }
 
-func New(log *logger.Logger, withSwagger bool, groupRoutes ...GroupRouter) *Server {
+func New(withSwagger, withCors bool) *Server {
 	srv := &http.Server{}
 	srv.Addr = `:` + strconv.Itoa(8000)
 
@@ -45,22 +43,24 @@ func New(log *logger.Logger, withSwagger bool, groupRoutes ...GroupRouter) *Serv
 		srv.Handler = router
 	}
 
-	for _, route := range groupRoutes {
-		route.AddRoute(router)
-	}
-
 	return &Server{
 		router: router,
 		server: srv,
-		logger: log,
 	}
 }
 
-func (s *Server) Start() {
-	s.logger.Info(fmt.Sprintf("Listening on: %s", s.server.Addr))
-	if err := s.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		s.logger.Error(fmt.Sprintf("Server error: %s", err.Error()))
+func (s *Server) CreateRoutes(groupRoutes ...GroupRouter) {
+	for _, route := range groupRoutes {
+		route.AddRoute(s.router)
 	}
+}
+
+func (s *Server) Start() error {
+	if err := s.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		return fmt.Errorf("server error: %s", err.Error())
+	}
+
+	return nil
 }
 
 func (s *Server) Stop(ctx context.Context) error {

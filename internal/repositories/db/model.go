@@ -21,10 +21,10 @@ func modelConverter(d domain.Company) model {
 	userModel := model{
 		ID:              d.ID,
 		Name:            d.Name,
-		Description:     d.Description,
-		EmployeesNumber: d.EmployeesNumber,
-		IsRegistered:    d.IsRegistered,
-		Type:            d.Type,
+		Description:     *d.Description,
+		EmployeesNumber: *d.EmployeesNumber,
+		IsRegistered:    *d.IsRegistered,
+		Type:            *d.Type,
 		UpdatedAt:       time.Now(),
 	}
 

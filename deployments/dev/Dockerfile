@@ -1,17 +1,10 @@
 #Stage 1: Builder
-FROM golang:1.23.4-alpine3.21 as builder
-
-#Install necessary tools
-RUN apk update && \
-    apk add --no-cache git
+FROM golang:1.23.4-bullseye as builder
 
 #Install Delve debugger
 RUN go install github.com/go-delve/delve/cmd/dlv@latest
 
 WORKDIR /app
-
-RUN pwd
-RUN ls
 
 #Copy and download dependencies
 COPY go.mod ./
@@ -21,14 +14,10 @@ RUN go mod download
 #Build the application
 COPY . .
 RUN go mod tidy
-RUN CGO_ENABLED=0 go build -o /app/company_crud/main ./cmd/company_crud/
+RUN go build -o /app/company_crud/main ./cmd/company_crud/
 
 #Stage 2: Final image
-FROM alpine:3.21.0
-
-#Install necessary runtime dependencies
-RUN apk update && \
-    apk add --no-cache ca-certificates
+FROM debian:bullseye-slim
 
 #Copy the binary from the builder stage
 COPY --from=builder /go/bin/dlv /usr/local/bin/dlv

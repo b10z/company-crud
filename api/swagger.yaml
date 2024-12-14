@@ -1,0 +1,67 @@
+definitions:
+  http.Create:
+    properties:
+      amount_of_employees:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+      registered:
+        type: boolean
+      type:
+        type: string
+    required:
+    - amount_of_employees
+    - name
+    - registered
+    - type
+    type: object
+  http.Error:
+    properties:
+      error_message:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact:
+    name: b10z
+  description: APIs for a site builder
+  license:
+    name: None - For private use only
+  title: CompanyCrud
+  version: "0.1"
+paths:
+  /companies:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: createCompany
+        in: body
+        name: createCompany
+        required: true
+        schema:
+          $ref: '#/definitions/http.Create'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+        "406":
+          description: ""
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.Error'
+      summary: Create new company
+      tags:
+      - company
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Token
+    type: apiKey
+swagger: "2.0"

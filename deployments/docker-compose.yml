@@ -21,8 +21,7 @@ services:
       kafka-topics --bootstrap-server kafka:29092 --list
       
       echo -e 'Creating kafka topics'
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic my-topic-1 --replication-factor 1 --partitions 1
-      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic my-topic-2 --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic companyMutationsTopic --replication-factor 1 --partitions 1
       
       echo -e 'Successfully created the following topics:'
       kafka-topics --bootstrap-server kafka:29092 --list"    
@@ -88,6 +87,7 @@ services:
       - "40000:40000"
     depends_on:
       - postgres
+      - init-kafka
 
 volumes:
   pgadmin_data:

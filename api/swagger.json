@@ -1,0 +1,102 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "APIs for a site builder",
+        "title": "CompanyCrud",
+        "contact": {
+            "name": "b10z"
+        },
+        "license": {
+            "name": "None - For private use only"
+        },
+        "version": "0.1"
+    },
+    "host": "localhost:8000",
+    "paths": {
+        "/companies": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Create new company",
+                "parameters": [
+                    {
+                        "description": "createCompany",
+                        "name": "createCompany",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/http.Create"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "406": {
+                        "description": ""
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/http.Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "http.Create": {
+            "type": "object",
+            "required": [
+                "amount_of_employees",
+                "name",
+                "registered",
+                "type"
+            ],
+            "properties": {
+                "amount_of_employees": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "registered": {
+                    "type": "boolean"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "http.Error": {
+            "type": "object",
+            "properties": {
+                "error_message": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Token",
+            "in": "header"
+        }
+    }
+}

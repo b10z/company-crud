@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
-	server string
-	topic  string
+	Server string
+	Topic  string
 }
 
 type Produce interface {
@@ -22,7 +22,7 @@ type KafkaProducer struct {
 
 func New(conf Config) (*KafkaProducer, error) {
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers": conf.server})
+		"bootstrap.servers": conf.Server})
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func New(conf Config) (*KafkaProducer, error) {
 
 func (kp *KafkaProducer) ProduceEvent(message []byte) error {
 	err := kp.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &kp.cfg.topic, Partition: kafka.PartitionAny},
+		TopicPartition: kafka.TopicPartition{Topic: &kp.cfg.Topic, Partition: kafka.PartitionAny},
 		Value:          []byte(message),
 	}, nil)
 
