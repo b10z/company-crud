@@ -7,26 +7,39 @@ import (
 )
 
 type model struct {
-	ID              uuid.UUID          `db:"id"`
-	Name            string             `db:"name,omitempty"`
-	Description     string             `db:"description,omitempty"`
-	EmployeesNumber int                `db:"employees_number,omitempty"`
-	IsRegistered    bool               `db:"is_registered,omitempty"`
-	Type            domain.CompanyType `db:"type,omitempty"`
-	CreatedAt       time.Time          `db:"created_at,omitempty"`
-	UpdatedAt       time.Time          `db:"updated_at"`
+	ID              uuid.UUID `db:"id"`
+	CurrentName     string    `db:"current_name,omitempty"`
+	Name            string    `db:"name,omitempty"`
+	Description     string    `db:"description,omitempty"`
+	EmployeesNumber int       `db:"employees_number,omitempty"`
+	IsRegistered    bool      `db:"is_registered,omitempty"`
+	Type            string    `db:"type,omitempty"`
+	CreatedAt       time.Time `db:"created_at,omitempty"`
+	UpdatedAt       time.Time `db:"updated_at"`
 }
 
 func modelConverter(d domain.Company) model {
-	userModel := model{
-		ID:              d.ID,
-		Name:            d.Name,
-		Description:     *d.Description,
-		EmployeesNumber: *d.EmployeesNumber,
-		IsRegistered:    *d.IsRegistered,
-		Type:            *d.Type,
-		UpdatedAt:       time.Now(),
+	companyModel := model{
+		ID:        d.ID,
+		Name:      d.Name,
+		UpdatedAt: time.Now(),
 	}
 
-	return userModel
+	if d.Type != nil {
+		companyModel.Type = d.Type.String()
+	}
+
+	if d.Description != nil {
+		companyModel.Description = *d.Description
+	}
+
+	if d.EmployeesNumber != nil {
+		companyModel.EmployeesNumber = *d.EmployeesNumber
+	}
+
+	if d.IsRegistered != nil {
+		companyModel.IsRegistered = *d.IsRegistered
+	}
+
+	return companyModel
 }

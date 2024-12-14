@@ -73,18 +73,18 @@ func (c *Company) Get(companyName string) (domain.Company, error) {
 	return company, nil
 }
 
-func (c *Company) Patch(company domain.Company) (domain.Company, error) {
-	err := c.companyDB.PatchByName(company)
+func (c *Company) Patch(company domain.Company, currentName string) error {
+	err := c.companyDB.PatchByName(company, currentName)
 	if err != nil {
-		return domain.Company{}, err
+		return err
 	}
 
 	err = c.producer.ProduceEvent([]byte(fmt.Sprintf("Company entry patched, with ID: %s", company.ID.String())))
 	if err != nil {
-		return domain.Company{}, err
+		return err
 	}
 
 	c.logger.Named(fmt.Sprintf("%s:%s", errorSection, patch)).Info("Company info retrieved")
 
-	return company, nil
+	return nil
 }

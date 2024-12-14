@@ -30,3 +30,4 @@ Prerequisites: `Docker, make`
 
 
 ---
+JWT Token without expiration date: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.PwN9mqs6JDOROs42oqojiJ0iGEzOtLejuVrDPITuxqw

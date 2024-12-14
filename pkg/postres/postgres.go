@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	DuplicateKey                     = errors.New("duplicateKey")
+	DuplicateKey                     = errors.New("duplicate key")
 	InvalidArgumentsForBuildingquery = errors.New("invalid arguments for building a query")
 	NoRowsErr                        = errors.New("no rows")
 )

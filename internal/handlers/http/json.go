@@ -8,7 +8,7 @@ import (
 type Create struct {
 	Name            string `json:"name" validate:"required"`
 	Description     string `json:"description"`
-	EmployeesNumber int    `json:"amount_of_employees" validate:"required"`
+	EmployeesNumber *int   `json:"amount_of_employees" validate:"required"`
 	IsRegistered    bool   `json:"registered" validate:"required"`
 	Type            string `json:"type" validate:"required"`
 }
@@ -26,7 +26,7 @@ type Get struct {
 
 type Patch struct {
 	ID              uuid.UUID `json:"id"`
-	Name            string    `json:"name" validate:"required"`
+	Name            string    `json:"name"`
 	Description     *string   `json:"description"`
 	EmployeesNumber *int      `json:"amount_of_employees"`
 	IsRegistered    *bool     `json:"registered"`

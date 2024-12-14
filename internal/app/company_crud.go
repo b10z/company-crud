@@ -14,28 +14,34 @@ import (
 	"time"
 )
 
+type Config struct {
+	TokenSignature string
+}
+
 type CompanyCRUD struct {
 	osSignalContext context.Context
 	log             *logger.Logger
 	server          *http_server.Server
 	db              *postres.Postgres
 	producer        *producer.KafkaProducer
+	cfg             Config
 }
 
-func New(ctx context.Context, log *logger.Logger, server *http_server.Server, db *postres.Postgres, producer *producer.KafkaProducer) *CompanyCRUD {
+func New(ctx context.Context, log *logger.Logger, cfg Config, server *http_server.Server, db *postres.Postgres, producer *producer.KafkaProducer) *CompanyCRUD {
 	return &CompanyCRUD{
 		osSignalContext: ctx,
 		log:             log,
 		server:          server,
 		db:              db,
 		producer:        producer,
+		cfg:             cfg,
 	}
 }
 
 func (cc *CompanyCRUD) Run() {
 	companyDB := db.New(cc.db, cc.log)
 	companyService := services.New(cc.log, cc.producer, companyDB)
-	companyHttp := http.New(cc.log, companyService)
+	companyHttp := http.New(cc.log, companyService, cc.cfg.TokenSignature)
 
 	cc.server.CreateRoutes(companyHttp)
 	cc.log.Info(fmt.Sprintf("Listening on: %s", "8000"))

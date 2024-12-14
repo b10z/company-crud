@@ -42,7 +42,7 @@ func (u *Company) Insert(company domain.Company) (uuid.UUID, error) {
 		companyModel.Description,
 		companyModel.EmployeesNumber,
 		companyModel.IsRegistered,
-		companyModel.Type.String(),
+		companyModel.Type,
 		companyModel.UpdatedAt,
 	).Scan(&companyModel.ID)
 
@@ -69,51 +69,54 @@ func (u *Company) GetByName(name string) (domain.Company, error) {
 
 	query := `SELECT * FROM xm_assessment.companies WHERE name = $1`
 
-	err := u.db.Get(&companyModel, query, companyModel.ID)
-
+	var tempType string
+	err := u.db.QueryRow(query, companyModel.Name).Scan(&companyModel.ID, &companyModel.Name, &companyModel.Description, &companyModel.EmployeesNumber, &companyModel.IsRegistered, &tempType, &companyModel.CreatedAt, &companyModel.UpdatedAt)
 	if err != nil {
 		u.logger.Named(fmt.Sprintf("%s:%s", errorSection, getByName)).Error(err.Error())
 		return domain.Company{}, err
 	}
+
+	companyType, err := domain.GetCompTypeFromString(tempType)
+	if err != nil {
+		u.logger.Named(fmt.Sprintf("%s:%s", errorSection, getByName)).Error(err.Error())
+		return domain.Company{}, err
+	}
+
 	return domain.Company{
 		ID:              companyModel.ID,
 		Name:            companyModel.Name,
 		Description:     &companyModel.Description,
 		EmployeesNumber: &companyModel.EmployeesNumber,
 		IsRegistered:    &companyModel.IsRegistered,
-		Type:            &companyModel.Type,
+		Type:            &companyType,
 		UpdatedAt:       companyModel.UpdatedAt,
 		CreatedAt:       companyModel.CreatedAt,
 	}, nil
 }
 
 func (u *Company) DeleteByName(name string) error {
-	companyModel := model{
-		Name: name,
-	}
+	query := `DELETE FROM xm_assessment.companies WHERE name=$1`
 
-	query := `DELETE FROM xm_assessment.companies WHERE name = $1`
-
-	result, err := u.db.NamedExec(query, companyModel)
+	res, err := u.db.Exec(query, name)
 	if err != nil {
 		u.logger.Named(fmt.Sprintf("%s:%s", errorSection, deleteByName)).Error(err.Error())
 		return err
 	}
 
-	_, err = result.RowsAffected()
+	rowsNumber, err := res.RowsAffected()
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return postres.NoRowsErr
-		}
-
 		u.logger.Named(fmt.Sprintf("%s:%s", errorSection, deleteByName)).Error(err.Error())
 		return err
+	}
+
+	if rowsNumber == 0 {
+		return postres.NoRowsErr
 	}
 
 	return nil
 }
 
-func (u *Company) PatchByName(company domain.Company) error {
+func (u *Company) PatchByName(company domain.Company, currentName string) error {
 	affectedFields, err := patchQueryBuilder(company)
 	if err != nil {
 		u.logger.Named(fmt.Sprintf("%s:%s", errorSection, patchByName)).Error(err.Error())
@@ -121,8 +124,9 @@ func (u *Company) PatchByName(company domain.Company) error {
 	}
 
 	companyModel := modelConverter(company)
+	companyModel.CurrentName = currentName
 
-	query := fmt.Sprintf(`UPDATE xm_assessment.companies SET %s WHERE name=:name`, affectedFields)
+	query := fmt.Sprintf(`UPDATE xm_assessment.companies SET %s WHERE name=:current_name`, affectedFields)
 
 	result, err := u.db.NamedExec(query, companyModel)
 	if err != nil {
@@ -130,7 +134,7 @@ func (u *Company) PatchByName(company domain.Company) error {
 		return err
 	}
 
-	_, err = result.RowsAffected()
+	rowsNumber, err := result.RowsAffected()
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return postres.NoRowsErr
@@ -138,6 +142,10 @@ func (u *Company) PatchByName(company domain.Company) error {
 
 		u.logger.Named(fmt.Sprintf("%s:%s", errorSection, patchByName)).Error(err.Error())
 		return err
+	}
+
+	if rowsNumber == 0 {
+		return postres.NoRowsErr
 	}
 
 	return nil

@@ -22,6 +22,21 @@ definitions:
       error_message:
         type: string
     type: object
+  http.Patch:
+    properties:
+      amount_of_employees:
+        type: integer
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      registered:
+        type: boolean
+      type:
+        type: string
+    type: object
 host: localhost:8000
 info:
   contact:
@@ -56,7 +71,103 @@ paths:
           description: Conflict
           schema:
             $ref: '#/definitions/http.Error'
+      security:
+      - ApiKeyAuth: []
       summary: Create new company
+      tags:
+      - company
+  /companies/{company_name}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: company_name
+        in: path
+        name: company_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+        "406":
+          description: ""
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.Error'
+        "500":
+          description: ""
+      security:
+      - ApiKeyAuth: []
+      summary: Delete company
+      tags:
+      - company
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: company_name
+        in: path
+        name: company_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+        "406":
+          description: ""
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.Error'
+        "500":
+          description: ""
+      security:
+      - ApiKeyAuth: []
+      summary: Get company
+      tags:
+      - company
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: company_name
+        in: path
+        name: company_name
+        required: true
+        type: string
+      - description: patchCompany
+        in: body
+        name: patchCompany
+        required: true
+        schema:
+          $ref: '#/definitions/http.Patch'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: ""
+        "406":
+          description: ""
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/http.Error'
+        "500":
+          description: ""
+      security:
+      - ApiKeyAuth: []
+      summary: Patch company
       tags:
       - company
 securityDefinitions:

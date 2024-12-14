@@ -67,7 +67,9 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGQUIT)
 	defer stop()
 
-	companyCrud := app.New(ctx, log, httpServer, postgres, kafkaProducer)
+	companyCrud := app.New(ctx, log, app.Config{
+		TokenSignature: cfg.TokenSignature,
+	}, httpServer, postgres, kafkaProducer)
 
 	companyCrud.Run()
 }

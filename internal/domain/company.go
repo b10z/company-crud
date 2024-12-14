@@ -35,7 +35,7 @@ func (ct *CompanyType) String() string {
 	case Cooperative:
 		return "Cooperative"
 	case SoleProprietorship:
-		return "SoleProprietorship"
+		return "Sole Proprietorship"
 	default:
 		return ""
 	}
@@ -49,7 +49,7 @@ func GetCompTypeFromString(compType string) (CompanyType, error) {
 		return NonProfit, nil
 	case "Cooperative":
 		return Cooperative, nil
-	case "SoleProprietorship":
+	case "Sole Proprietorship":
 		return SoleProprietorship, nil
 	default:
 		return 0, fmt.Errorf("invalid companyType")
@@ -58,11 +58,14 @@ func GetCompTypeFromString(compType string) (CompanyType, error) {
 
 type CompanyDB interface {
 	Insert(Company) (uuid.UUID, error)
-	DeleteByName(name string) error
-	PatchByName(company Company) error
-	GetByName(name string) (Company, error)
+	DeleteByName(string) error
+	PatchByName(Company, string) error
+	GetByName(string) (Company, error)
 }
 
 type CompanyService interface {
 	Create(Company) (uuid.UUID, error)
+	Delete(string) error
+	Patch(Company, string) error
+	Get(string) (Company, error)
 }
