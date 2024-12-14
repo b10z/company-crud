@@ -1,0 +1,39 @@
+services:
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@company-crud.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  postgres:
+    image: postgres:16.4
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_HOST: 127.0.0.1
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: passwd
+      POSTGRES_DB: company-db
+    volumes:
+      - ../scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  company-crud:
+    restart: always
+    build:
+      context: ../
+      dockerfile: deployments/dev/Dockerfile
+    ports:
+      - "8000:8000"
+      - "40000:40000"
+    depends_on:
+      - postgres
+
+volumes:
+  pgadmin_data:
