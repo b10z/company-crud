@@ -109,6 +109,9 @@ func (u *Company) DeleteByName(name string) error {
 	rowsNumber, err := res.RowsAffected()
 	if err != nil {
 		u.logger.Named(fmt.Sprintf("%s:%s", errorSection, deleteByName)).Error(err.Error())
+		if errors.Is(err, sql.ErrNoRows) {
+			return postres.NoRowsErr
+		}
 		return err
 	}
 

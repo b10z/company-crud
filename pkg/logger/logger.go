@@ -14,6 +14,8 @@ func New(env string) (*Logger, error) {
 
 	var err error
 	switch env {
+	case "test":
+		return &Logger{logger}, nil
 	case "stag":
 		fallthrough
 	case "dev":

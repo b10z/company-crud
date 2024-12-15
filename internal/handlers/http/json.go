@@ -25,12 +25,11 @@ type Get struct {
 }
 
 type Patch struct {
-	ID              uuid.UUID `json:"id"`
-	Name            string    `json:"name"`
-	Description     *string   `json:"description"`
-	EmployeesNumber *int      `json:"amount_of_employees"`
-	IsRegistered    *bool     `json:"registered"`
-	Type            *string   `json:"type"`
+	Name            string  `json:"name"`
+	Description     *string `json:"description"`
+	EmployeesNumber *int    `json:"amount_of_employees"`
+	IsRegistered    *bool   `json:"registered"`
+	Type            *string `json:"type"`
 }
 
 type Error struct {

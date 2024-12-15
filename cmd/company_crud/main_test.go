@@ -37,7 +37,7 @@ func TestIntegration_main(t *testing.T) {
 	require.NoError(t, err)
 
 	//logger := zap.NewNop()
-	logger, err := logger.New("dev")
+	logger, err := logger.New("test")
 	require.NoError(t, err)
 
 	postgresCli, err := postres.New(postres.Config{
@@ -67,6 +67,6 @@ func TestIntegration_main(t *testing.T) {
 
 	go companyCrud.Run()
 
-	suite.testCreateHttpCases(t, postgresCli, logger)
+	suite.startTests(t, postgresCli, logger)
 
 }
