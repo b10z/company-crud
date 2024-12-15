@@ -50,6 +50,6 @@ func New(conf Config) (*Postgres, error) {
 	}, err
 }
 
-func (p *Postgres) Stop() {
-	p.Close()
+func (p *Postgres) Stop() error {
+	return p.Close()
 }
