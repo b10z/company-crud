@@ -16,7 +16,7 @@ import (
 
 // @title CompanyCrud
 // @version 0.1
-// @description APIs for a site builder
+// @description APIs for a crud
 
 // @contact.name b10z
 
@@ -57,6 +57,7 @@ func main() {
 
 	kafkaProducer, err := producer.New(producer.Config{
 		Server: cfg.KafkaServer,
+		Acks:   cfg.KafkaAcks,
 		Topic:  cfg.KafkaTopic,
 	})
 	if err != nil {

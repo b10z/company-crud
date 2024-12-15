@@ -9,6 +9,7 @@ type Config struct {
 	DBDriver       string `mapstructure:"DB_DRIVER"`
 	KafkaServer    string `mapstructure:"KAFKA_SERVER"`
 	KafkaTopic     string `mapstructure:"KAFKA_TOPIC"`
+	KafkaAcks      string `mapstructure:"KAFKA_ACKS"`
 	DBHost         string `mapstructure:"DB_HOST"`
 	DBPort         int    `mapstructure:"DB_PORT"`
 	DBName         string `mapstructure:"DB_NAME"`

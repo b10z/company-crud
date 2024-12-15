@@ -11,7 +11,7 @@ import (
 	"github.com/lib/pq"
 )
 
-const errorSection = "userDB"
+const errorSection = "companyDB"
 const (
 	create       = "create"
 	getByName    = "getByName"

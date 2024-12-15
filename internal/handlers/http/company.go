@@ -89,16 +89,17 @@ func (c *Company) create(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		c.logger.Named(fmt.Sprintf("%s:%s", errorSection, create)).Debug(err.Error())
-		w.WriteHeader(http.StatusNotAcceptable)
 
-		if errors.As(err, &postres.DuplicateKey) {
+		if errors.Is(err, postres.DuplicateKey) {
 			w.WriteHeader(http.StatusConflict)
 			resp, _ := json.Marshal(Error{
 				Message: "duplicate name",
 			})
 			w.Write(resp)
+			return
 		}
 
+		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
 
@@ -130,16 +131,17 @@ func (c *Company) get(w http.ResponseWriter, r *http.Request) {
 	result, err := c.companyService.Get(nameParam)
 	if err != nil {
 		c.logger.Named(fmt.Sprintf("%s:%s", errorSection, get)).Debug(err.Error())
-		w.WriteHeader(http.StatusBadRequest)
 
-		if errors.As(err, &postres.NoRowsErr) {
+		if errors.Is(err, postres.NoRowsErr) {
 			w.WriteHeader(http.StatusConflict)
 			resp, _ := json.Marshal(Error{
 				Message: "no results",
 			})
 			w.Write(resp)
+			return
 		}
 
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -187,7 +189,6 @@ func (c *Company) delete(w http.ResponseWriter, r *http.Request) {
 	err := c.companyService.Delete(nameParam)
 	if err != nil {
 		c.logger.Named(fmt.Sprintf("%s:%s", errorSection, deleteM)).Debug(err.Error())
-		w.WriteHeader(http.StatusBadRequest)
 
 		if errors.As(err, &postres.NoRowsErr) {
 			w.WriteHeader(http.StatusConflict)
@@ -195,8 +196,10 @@ func (c *Company) delete(w http.ResponseWriter, r *http.Request) {
 				Message: "no entries affected",
 			})
 			w.Write(resp)
+			return
 		}
 
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -262,7 +265,6 @@ func (c *Company) patch(w http.ResponseWriter, r *http.Request) {
 	err = c.companyService.Patch(companyPatch, nameParam)
 	if err != nil {
 		c.logger.Named(fmt.Sprintf("%s:%s", errorSection, patch)).Debug(err.Error())
-		w.WriteHeader(http.StatusBadRequest)
 
 		if errors.As(err, &postres.NoRowsErr) {
 			w.WriteHeader(http.StatusConflict)
@@ -270,8 +272,10 @@ func (c *Company) patch(w http.ResponseWriter, r *http.Request) {
 				Message: "no entries affected",
 			})
 			w.Write(resp)
+			return
 		}
 
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 

@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	Server string
+	Acks   string
 	Topic  string
 }
 
@@ -22,7 +23,9 @@ type KafkaProducer struct {
 
 func New(conf Config) (*KafkaProducer, error) {
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers": conf.Server})
+		"bootstrap.servers": conf.Server,
+		"acks":              conf.Acks,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -34,11 +37,13 @@ func New(conf Config) (*KafkaProducer, error) {
 }
 
 func (kp *KafkaProducer) ProduceEvent(message []byte) error {
+	deliveryChan := make(chan kafka.Event)
+	defer close(deliveryChan)
+
 	err := kp.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &kp.cfg.Topic, Partition: kafka.PartitionAny},
 		Value:          []byte(message),
-	}, nil)
-
+	}, deliveryChan)
 	if err != nil {
 		if err.(kafka.Error).Code() == kafka.ErrQueueFull {
 			time.Sleep(time.Second)
