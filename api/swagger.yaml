@@ -28,8 +28,6 @@ definitions:
         type: integer
       description:
         type: string
-      id:
-        type: string
       name:
         type: string
       registered:
@@ -41,9 +39,9 @@ host: localhost:8000
 info:
   contact:
     name: b10z
-  description: APIs for a site builder
+  description: 'APIs for a company handler - JWT Token without expiration date: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.PwN9mqs6JDOROs42oqojiJ0iGEzOtLejuVrDPITuxqw'
   license:
-    name: None - For private use only
+    name: None
   title: CompanyCrud
   version: "0.1"
 paths:

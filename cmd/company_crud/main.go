@@ -16,11 +16,11 @@ import (
 
 // @title CompanyCrud
 // @version 0.1
-// @description APIs for a crud
+// @description APIs for a company handler - JWT Token without expiration date: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.PwN9mqs6JDOROs42oqojiJ0iGEzOtLejuVrDPITuxqw
 
 // @contact.name b10z
 
-// @license.name None - For private use only
+// @license.name None
 
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header

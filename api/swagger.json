@@ -1,13 +1,13 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "APIs for a site builder",
+        "description": "APIs for a company handler - JWT Token without expiration date: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.PwN9mqs6JDOROs42oqojiJ0iGEzOtLejuVrDPITuxqw",
         "title": "CompanyCrud",
         "contact": {
             "name": "b10z"
         },
         "license": {
-            "name": "None - For private use only"
+            "name": "None"
         },
         "version": "0.1"
     },
@@ -252,9 +252,6 @@
                     "type": "integer"
                 },
                 "description": {
-                    "type": "string"
-                },
-                "id": {
                     "type": "string"
                 },
                 "name": {
