@@ -1,0 +1,17 @@
+linters:
+  # Disable all defaults and use only specified linters
+  disable-all: true
+  # Enable specific linter
+  # https://golangci-lint.run/usage/linters/
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - revive
+    - gochecknoglobals
+    - gofmt
+
+  fast: true

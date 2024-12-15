@@ -24,6 +24,16 @@ tests.test-build:
 		--tag sevice-test-build \
 		-f ./deployments/test/Dockerfile .
 
+#SWAGGER OPTIONS-----------------------------------------------------------------------------
+swagger.init:
+	make tests.test-build
+	@docker run --volume .:/app --workdir /app \
+    	sevice-test-build /bin/bash -c "swag init --parseInternal=true \
+                                              --generatedTime=true \
+                                              --dir=cmd/company_crud/ \
+                                              --parseDependency=true \
+                                              --output=api";\
+	make tests.test-clear
 
 #SQL DB OPTIONS------------------------------------------------------------------------------
 sql.migrate:

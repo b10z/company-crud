@@ -4,8 +4,12 @@ import "github.com/spf13/viper"
 
 type Config struct {
 	Environment    string `mapstructure:"ENV"`
-	Swagger        string `mapstructure:"SWAGGER"`
+	Swagger        bool   `mapstructure:"SWAGGER"`
+	Cors           bool   `mapstructure:"CORS"`
 	DBDriver       string `mapstructure:"DB_DRIVER"`
+	KafkaServer    string `mapstructure:"KAFKA_SERVER"`
+	KafkaTopic     string `mapstructure:"KAFKA_TOPIC"`
+	KafkaAcks      string `mapstructure:"KAFKA_ACKS"`
 	DBHost         string `mapstructure:"DB_HOST"`
 	DBPort         int    `mapstructure:"DB_PORT"`
 	DBName         string `mapstructure:"DB_NAME"`
