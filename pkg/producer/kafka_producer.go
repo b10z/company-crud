@@ -37,6 +37,7 @@ func New(conf Config) (*KafkaProducer, error) {
 }
 
 func (kp *KafkaProducer) Stop() {
+	kp.Flush(int(5 * time.Second))
 	kp.Close()
 }
 

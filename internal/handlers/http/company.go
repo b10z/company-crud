@@ -190,7 +190,7 @@ func (c *Company) delete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		c.logger.Named(fmt.Sprintf("%s:%s", errorSection, deleteM)).Debug(err.Error())
 
-		if errors.As(err, &postres.NoRowsErr) {
+		if errors.Is(err, postres.NoRowsErr) {
 			w.WriteHeader(http.StatusConflict)
 			resp, _ := json.Marshal(Error{
 				Message: "no entries affected",
@@ -266,7 +266,7 @@ func (c *Company) patch(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		c.logger.Named(fmt.Sprintf("%s:%s", errorSection, patch)).Debug(err.Error())
 
-		if errors.As(err, &postres.NoRowsErr) {
+		if errors.Is(err, postres.NoRowsErr) {
 			w.WriteHeader(http.StatusConflict)
 			resp, _ := json.Marshal(Error{
 				Message: "no entries affected",
