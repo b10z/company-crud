@@ -36,14 +36,28 @@ func New(conf Config) (*KafkaProducer, error) {
 	}, nil
 }
 
+func (kp *KafkaProducer) Stop() {
+	kp.Close()
+}
+
 func (kp *KafkaProducer) ProduceEvent(message []byte) error {
-	deliveryChan := make(chan kafka.Event)
-	defer close(deliveryChan)
+	go func() {
+		for e := range kp.Events() {
+			switch ev := e.(type) {
+			case *kafka.Message:
+				if ev.TopicPartition.Error != nil {
+					fmt.Printf("Delivery failed: %v\n", ev.TopicPartition)
+				} else {
+					fmt.Printf("Delivered message to %v\n", ev.TopicPartition)
+				}
+			}
+		}
+	}()
 
 	err := kp.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &kp.cfg.Topic, Partition: kafka.PartitionAny},
 		Value:          []byte(message),
-	}, deliveryChan)
+	}, nil)
 	if err != nil {
 		if err.(kafka.Error).Code() == kafka.ErrQueueFull {
 			time.Sleep(time.Second)

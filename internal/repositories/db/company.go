@@ -73,6 +73,9 @@ func (u *Company) GetByName(name string) (domain.Company, error) {
 	err := u.db.QueryRow(query, companyModel.Name).Scan(&companyModel.ID, &companyModel.Name, &companyModel.Description, &companyModel.EmployeesNumber, &companyModel.IsRegistered, &tempType, &companyModel.CreatedAt, &companyModel.UpdatedAt)
 	if err != nil {
 		u.logger.Named(fmt.Sprintf("%s:%s", errorSection, getByName)).Error(err.Error())
+		if errors.Is(err, sql.ErrNoRows) {
+			return domain.Company{}, postres.NoRowsErr
+		}
 		return domain.Company{}, err
 	}
 
@@ -136,10 +139,6 @@ func (u *Company) PatchByName(company domain.Company, currentName string) error 
 
 	rowsNumber, err := result.RowsAffected()
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return postres.NoRowsErr
-		}
-
 		u.logger.Named(fmt.Sprintf("%s:%s", errorSection, patchByName)).Error(err.Error())
 		return err
 	}
